@@ -1,9 +1,9 @@
 using ChatGPTClone.Domain.Entities;
-using ChatGPTClone.Domain.Identity;
+using ChatGPTClone.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ChatGPTClone.Persistence.Configurations;
+namespace ChatGPTClone.Infrastructure.Persistence.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<AppUser>
 {
@@ -34,6 +34,8 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.Property(u => u.PhoneNumber).IsRequired(false);
         builder.Property(u => u.PhoneNumber).HasMaxLength(20);
 
+
+
         // The relationships between User and other entity types
         // Note that these relationships are configured with no navigation properties
 
@@ -49,9 +51,9 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
         // Each User can have many entries in the UserRole join table
         builder.HasMany<AppUserRole>().WithOne().HasForeignKey(ur => ur.UserId).IsRequired();
 
-        // Each User can have many ChatSession
-        builder.HasMany<ChatSession>(x => x.ChatSessions)
-            .WithOne(cs => cs.AppUser)
+        // Each User can have many ChatSessions
+        builder.HasMany<ChatSession>()
+            .WithOne()
             .HasForeignKey(x => x.AppUserId);
 
         // Common Properties
@@ -72,6 +74,7 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.Property(user => user.ModifiedByUserId)
             .HasMaxLength(100)
             .IsRequired(false);
+
 
         builder.ToTable("Users");
     }

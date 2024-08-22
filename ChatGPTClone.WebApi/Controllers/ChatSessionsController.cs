@@ -1,9 +1,14 @@
-﻿using ChatGPTClone.Domain.Entities;
-using ChatGPTClone.Persistence.Contexts;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿
+using ChatGPTClone.Infrastructure.Persistence.Contexts;
 
 namespace ChatGPTClone.WebApi.Controllers;
+
+using ChatGPTClone.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 [Route("api/[controller]")]
 [ApiController]

@@ -1,10 +1,10 @@
-﻿using ChatGPTClone.Domain.Identity;
+﻿using ChatGPTClone.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ChatGPTClone.Persistence.Configurations;
+namespace ChatGPTClone.Infrastructure.Persistence.Configurations;
 
-public class UserTokenConfiguration:IEntityTypeConfiguration<AppUserToken>
+public class UserTokenConfiguration : IEntityTypeConfiguration<AppUserToken>
 {
     public void Configure(EntityTypeBuilder<AppUserToken> builder)
     {

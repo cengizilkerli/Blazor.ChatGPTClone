@@ -1,11 +1,11 @@
-﻿using ChatGPTClone.Domain.Entities;
+﻿using System.Text.Json;
+using ChatGPTClone.Domain.Entities;
 using ChatGPTClone.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Text.Json;
 
-namespace ChatGPTClone.Persistence.Configurations;
+namespace ChatGPTClone.Infrastructure.Persistence.Configurations;
 
 public class ChatSessionConfiguration : IEntityTypeConfiguration<ChatSession>
 {
