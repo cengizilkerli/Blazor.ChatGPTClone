@@ -1,11 +1,12 @@
-﻿using ChatGPTClone.Domain.Entities;
+﻿using ChatGPTClone.Application.Common.Models.General;
+using ChatGPTClone.Domain.Entities;
 using ChatGPTClone.Domain.Enums;
 using ChatGPTClone.Domain.ValueObjects;
 using MediatR;
 
 namespace ChatGPTClone.Application.Features.ChatSessions.Commands.Create;
 
-public class ChatSessionCreateCommand : IRequest<Guid>
+public class ChatSessionCreateCommand : IRequest<ResponseDto<Guid>>
 {
     public GptModelType Model { get; set; }
     public string Content { get; set; }
@@ -14,7 +15,7 @@ public class ChatSessionCreateCommand : IRequest<Guid>
     {
         return new ChatSession()
         {
-            Id = Guid.NewGuid(),
+            Id = Ulid.NewUlid().ToGuid(), //IIDService.NewID()  --> .Net 9 --> Guid.V7
             Model = Model,
             AppUserId = userId,
             CreatedOn = DateTimeOffset.UtcNow,
@@ -24,13 +25,13 @@ public class ChatSessionCreateCommand : IRequest<Guid>
             [
                 new ChatThread()
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Ulid.NewUlid().ToGuid().ToString(),
                     CreatedOn = DateTimeOffset.UtcNow,
                     Messages =
                     [
                         new ChatMessage()
                         {
-                            Id = Guid.NewGuid().ToString(),
+                            Id = Ulid.NewUlid().ToGuid().ToString(),
                             Model = Model,
                             Type = ChatMessageType.System,
                             Content = "You're a very helpful and happy assistant which loves to help people.",
@@ -38,7 +39,7 @@ public class ChatSessionCreateCommand : IRequest<Guid>
                         },
                         new ChatMessage()
                         {
-                            Id = Guid.NewGuid().ToString(),
+                            Id = Ulid.NewUlid().ToGuid().ToString(),
                             Model = Model,
                             Type = ChatMessageType.User,
                             Content = Content,

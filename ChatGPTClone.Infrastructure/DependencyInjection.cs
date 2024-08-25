@@ -10,7 +10,6 @@ namespace ChatGPTClone.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-
             var connectionString = configuration.GetConnectionString("PostgreSql");
 
             services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(connectionString));
