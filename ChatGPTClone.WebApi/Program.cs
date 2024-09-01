@@ -47,6 +47,8 @@ try
     //null döndürür
     //var requestLocalizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>()?.Value;
 
+    app.UseRequestLocalization(requestLocalizationOptions);
+
     app.UseHttpsRedirection();
 
     app.UseAuthentication();

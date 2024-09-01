@@ -21,7 +21,7 @@ public static class DependencyInjection
             var supportedCultures = new List<CultureInfo> 
             {
                 defaultCulture,
-                new CultureInfo("en-GB")
+                new("en-GB")
             };
 
             option.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(defaultCulture);
