@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Resend;
 
 namespace ChatGPTClone.Infrastructure
 {
@@ -23,12 +24,12 @@ namespace ChatGPTClone.Infrastructure
             services.AddScoped<IJwtService, JwtManager>();
 
             services.AddScoped<IIdentityService, IdentityManager>();
+            
+            services.AddScoped<IEmailService, ResendEmailManager>();
 
             services.AddIdentity<AppUser, Role>(option =>
             {
-
                 option.User.RequireUniqueEmail = true;
-
                 option.Password.RequireNonAlphanumeric = false;
                 option.Password.RequireUppercase = false;
                 option.Password.RequireLowercase = false;
@@ -41,6 +42,12 @@ namespace ChatGPTClone.Infrastructure
 
             // JWT ayarlarını yapılandırır
             ConfigureJwtSettings(services, configuration);
+
+
+            services.AddOptions();
+            services.AddHttpClient<ResendClient>();
+            services.Configure<ResendClientOptions>(o => o.ApiToken = configuration.GetSection("ResendApiKey").Value!);
+            services.AddTransient<IResend, ResendClient>();
 
             return services;
         }

@@ -6,11 +6,13 @@ namespace ChatGPTClone.WebApi;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
         services.AddHttpContextAccessor();
 
         services.AddScoped<ICurrentUserServices, CurrentUserManager>();
+
+        services.AddSingleton<IEnvironmentService, EnvironmentManager>(sp => new EnvironmentManager(environment.WebRootPath));
 
         services.AddLocalization(option => option.ResourcesPath = "Resources");
 
