@@ -6,6 +6,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Web;
 
 namespace ChatGPTClone.Infrastructure.Services;
 
@@ -39,6 +40,23 @@ public class IdentityManager : IIdentityService
         return _userManager
         .Users
         .AnyAsync(x => x.Email == email, cancellationToken);
+    }
+
+    public Task<bool> CheckIfEmailVerifiedAsync(string email, CancellationToken cancellationToken)
+    {
+        return _userManager
+        .Users
+        .AnyAsync(x => x.Email == email && x.EmailConfirmed, cancellationToken);
+    }
+
+    public async Task<IdentityCreateEmailTokenResponse> CreateEmailTokenAsync(IdentityCreateEmailTokenRequest request, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        // Kayıt yanıtını döndür.
+        return new IdentityCreateEmailTokenResponse(emailToken);
     }
 
     // Kullanıcının giriş yapmasını sağlar.
@@ -92,6 +110,20 @@ public class IdentityManager : IIdentityService
 
         // Kayıt yanıtını döndür.
         return new IdentityRegisterResponse(userId, user.Email, emailToken);
+    }
+
+    public async Task<IdentityVerifyEmailResponse> VerifyEmailAsync(IdentityVerifyEmailRequest request, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        var decodedToken = HttpUtility.UrlDecode(request.Token);
+
+        var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+
+        if (!result.Succeeded)
+            CreateAndThrowValidationException(result.Errors);
+
+        return new IdentityVerifyEmailResponse(user.Email);
     }
 
     // Doğrulama hatası oluşturur ve fırlatır.
