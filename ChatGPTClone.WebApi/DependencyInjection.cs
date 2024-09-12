@@ -12,6 +12,18 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder =>
+                {
+                    builder.AllowAnyMethod()
+                           .AllowCredentials()
+                           .SetIsOriginAllowed((host) => true)
+                           .AllowAnyHeader(); 
+                });
+        });
+
         services.AddHttpContextAccessor();
 
         services.AddScoped<ICurrentUserServices, CurrentUserManager>();

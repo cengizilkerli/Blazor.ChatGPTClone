@@ -17,7 +17,6 @@ public class AuthController : ApiControllerBase
     public async Task<IActionResult> Login(AuthLoginCommand command, CancellationToken cancellationToken)
     => Ok(await Mediatr.Send(command, cancellationToken));
 
-
     [HttpPost("register")]
     public async Task<IActionResult> Register(AuthRegisterCommand command, CancellationToken cancellationToken)
     => Ok(await Mediatr.Send(command, cancellationToken));
