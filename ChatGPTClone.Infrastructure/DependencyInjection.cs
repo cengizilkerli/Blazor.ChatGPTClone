@@ -7,73 +7,62 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenAI.Extensions;
 using Resend;
 
-namespace ChatGPTClone.Infrastructure
+namespace ChatGPTClone.Infrastructure;
+
+// Bu sınıf, uygulama altyapısının bağımlılık enjeksiyonunu yapılandırır
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    // Bu metod, altyapı servislerini IServiceCollection'a ekler
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        // Veritabanı bağlantı dizesini yapılandırmadan alır
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+        // ApplicationDbContext'i PostgreSQL ile kullanmak üzere yapılandırır
+        services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(connectionString));
+
+        // IApplicationDbContext'i ApplicationDbContext ile eşler
+        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+
+        // JWT ayarlarını yapılandırır
+        services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+
+        services.AddOpenAIService(settings => settings.ApiKey = configuration.GetSection("OpenAiApiKey").Value!);
+
+        services.AddScoped<IJwtService, JwtManager>();
+
+        services.AddScoped<IIdentityService, IdentityManager>();
+
+        services.AddScoped<IEmailService, ResendEmailManager>();
+
+        services.AddScoped<IOpenAiService, OpenAiManager>();
+
+        services.AddIdentity<AppUser, Role>(options =>
         {
-            var connectionString = configuration.GetConnectionString("PostgreSql");
+            options.User.RequireUniqueEmail = true;
 
-            services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(connectionString));
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireDigit = false;
+            options.Password.RequiredUniqueChars = 0;
+            options.Password.RequiredLength = 6;
+        })
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
 
-            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+        // Resend
+        services.AddOptions();
 
-            services.AddScoped<IJwtService, JwtManager>();
+        services.AddHttpClient<ResendClient>();
 
-            services.AddScoped<IIdentityService, IdentityManager>();
-            
-            services.AddScoped<IEmailService, ResendEmailManager>();
+        services.Configure<ResendClientOptions>(o => o.ApiToken = configuration.GetSection("ResendApiKey").Value!);
 
-            services.AddIdentity<AppUser, Role>(option =>
-            {
-                option.User.RequireUniqueEmail = true;
-                option.Password.RequireNonAlphanumeric = false;
-                option.Password.RequireUppercase = false;
-                option.Password.RequireLowercase = false;
-                option.Password.RequireDigit = false;
-                option.Password.RequiredUniqueChars = 0;
-                option.Password.RequiredLength = 6;
+        services.AddTransient<IResend, ResendClient>();
 
-            }).AddEntityFrameworkStores<ApplicationDbContext>()
-              .AddDefaultTokenProviders();
-
-            // JWT ayarlarını yapılandırır
-            ConfigureJwtSettings(services, configuration);
-
-
-            services.AddOptions();
-            services.AddHttpClient<ResendClient>();
-            services.Configure<ResendClientOptions>(o => o.ApiToken = configuration.GetSection("ResendApiKey").Value!);
-            services.AddTransient<IResend, ResendClient>();
-
-            return services;
-        }
-
-        private static void ConfigureJwtSettings(IServiceCollection services, IConfiguration configuration)
-        {
-            // Yapılandırmadan JWT ayarları bölümünü alır
-            var jwtSettingsSection = configuration.GetSection("JwtSettings");
-
-            // Eğer JWT ayarları yapılandırmada mevcutsa, bu ayarları kullanır
-            if (jwtSettingsSection.Exists())
-            {
-                services.Configure<JwtSettings>(jwtSettingsSection);
-            }
-            // Aksi takdirde, varsayılan değerlerle JWT ayarlarını yapılandırır
-            else
-            {
-                services.Configure<JwtSettings>(options =>
-                {
-                    options.SecretKey = "default-secret-key-for-development-only";
-                    options.AccessTokenExpiration = TimeSpan.FromMinutes(30);
-                    options.RefreshTokenExpiration = TimeSpan.FromDays(7);
-                    options.Issuer = "ChatGPTClone";
-                    options.Audience = "ChatGPTClone";
-                });
-            }
-        }
+        return services;
     }
 }
