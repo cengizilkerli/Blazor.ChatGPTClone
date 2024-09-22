@@ -7,10 +7,12 @@ namespace ChatGPTClone.Application.Features.ChatSessions.Queries.GetById;
 public class ChatSessionGetByIdQueryValidator : AbstractValidator<ChatSessionGetByIdQuery>
 {
     private readonly IApplicationDbContext _context;
+    private readonly ICurrentUserServices _currentUserService;
 
-    public ChatSessionGetByIdQueryValidator(IApplicationDbContext context)
+    public ChatSessionGetByIdQueryValidator(IApplicationDbContext context, ICurrentUserServices currentUserService)
     {
         _context = context;
+        _currentUserService = currentUserService;
     }
 
     public ChatSessionGetByIdQueryValidator()
@@ -24,6 +26,6 @@ public class ChatSessionGetByIdQueryValidator : AbstractValidator<ChatSessionGet
 
     private Task<bool> BeValidIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return _context.ChatSessions.AnyAsync(x => x.Id == id, cancellationToken);
+        return _context.ChatSessions.AnyAsync(x => x.Id == id && x.AppUserId == _currentUserService.UserId, cancellationToken);
     }
 }
