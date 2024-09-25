@@ -27,4 +27,8 @@
     <ProjectReference Include="..\ChatGPTClone.Application\ChatGPTClone.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Persistence\Migrations\" />
+  </ItemGroup>
+
 </Project>

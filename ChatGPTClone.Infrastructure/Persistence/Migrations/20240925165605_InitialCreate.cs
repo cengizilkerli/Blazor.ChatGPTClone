@@ -188,6 +188,11 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedByUserId", "CreatedOn", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "ModifiedByUserId", "ModifiedOn", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { new Guid("2798212b-3e5d-4556-8629-a64eb70da4a8"), 0, "0415856b-375f-40bb-99c9-c8ffc5fc67d5", "2798212b-3e5d-4556-8629-a64eb70da4a8", new DateTimeOffset(new DateTime(2024, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 3, 0, 0, 0)), "cengizilkerli@gmail.com", true, "Cengiz", "İlkerli", false, null, null, null, "CENGIZILKERLI@GMAIL.COM", "CENGIZILKERLI", "AQAAAAIAAYagAAAAEOOi/RN6gW6dtMHytYt+g/hTDsoc3WTb64DMb/Y9adCU3vLg7EimFS0poOWcYFIEJQ==", null, false, "6c079e71-127f-4d80-8f47-d1ff75e43042", false, "cengizilkerli" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ChatSessions_AppUserId",
                 table: "ChatSessions",

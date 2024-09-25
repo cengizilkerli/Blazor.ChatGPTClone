@@ -19,7 +19,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Veritabanı bağlantı dizesini yapılandırmadan alır
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("PostgreSql");
 
         // ApplicationDbContext'i PostgreSQL ile kullanmak üzere yapılandırır
         services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(connectionString));
@@ -39,6 +39,8 @@ public static class DependencyInjection
         services.AddScoped<IEmailService, ResendEmailManager>();
 
         services.AddScoped<IOpenAiService, OpenAiManager>();
+
+        services.AddScoped<IChatSessionCacheService, ChatSessionCacheManager>();
 
         services.AddIdentity<AppUser, Role>(options =>
         {

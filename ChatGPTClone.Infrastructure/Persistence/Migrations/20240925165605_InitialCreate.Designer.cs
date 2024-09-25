@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChatGPTClone.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240828190236_AddSeederUser")]
-    partial class AddSeederUser
+    [Migration("20240925165605_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -167,7 +167,7 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("2798212b-3e5d-4556-8629-a64eb70da4a8"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a92a70a0-bdf6-4cf6-96e4-3a75087c144a",
+                            ConcurrencyStamp = "0415856b-375f-40bb-99c9-c8ffc5fc67d5",
                             CreatedByUserId = "2798212b-3e5d-4556-8629-a64eb70da4a8",
                             CreatedOn = new DateTimeOffset(new DateTime(2024, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 3, 0, 0, 0)),
                             Email = "cengizilkerli@gmail.com",
@@ -177,9 +177,9 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "CENGIZILKERLI@GMAIL.COM",
                             NormalizedUserName = "CENGIZILKERLI",
-                            PasswordHash = "AQAAAAIAAYagAAAAENSekyAUuyOupnj1/9b5TWzfQtYspXHkSiXFpjAHNyHC6FjlJaHXVYhk/mXkHa3v5g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOOi/RN6gW6dtMHytYt+g/hTDsoc3WTb64DMb/Y9adCU3vLg7EimFS0poOWcYFIEJQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "00670702-b7c7-465e-a2bb-4b7892421a6d",
+                            SecurityStamp = "6c079e71-127f-4d80-8f47-d1ff75e43042",
                             TwoFactorEnabled = false,
                             UserName = "cengizilkerli"
                         });
