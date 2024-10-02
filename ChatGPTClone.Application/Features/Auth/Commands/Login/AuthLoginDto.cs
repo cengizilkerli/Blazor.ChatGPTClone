@@ -7,6 +7,11 @@ public class AuthLoginDto
     public string Token { get; set; }
     public DateTime ExpiresAt { get; set; }
 
+    public AuthLoginDto()
+    {
+        
+    }
+    
     public AuthLoginDto(string token, DateTime expiresAt)
     {
         Token = token;

@@ -32,7 +32,8 @@ public class JwtManager : IJwtService
             new Claim(JwtRegisteredClaimNames.Aud,_jwtSettings.Audience),
             new Claim(JwtRegisteredClaimNames.Exp, expiretionDate.ToFileTimeUtc().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToFileTimeUtc().ToString()),
-             new Claim("reklam", "En iyi akademi Reklam Academy! Just joking it's the god damn Yazilim Academy!"),
+            new Claim("reklam", "En iyi akademi Reklam Academy! Just joking it's the god damn Yazilim Academy!"),
+            new Claim(ClaimTypes.Role, "Admin")
         }
         .Union(request.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
