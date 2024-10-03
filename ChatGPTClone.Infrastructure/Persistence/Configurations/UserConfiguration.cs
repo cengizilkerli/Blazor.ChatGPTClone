@@ -34,8 +34,6 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.Property(u => u.PhoneNumber).IsRequired(false);
         builder.Property(u => u.PhoneNumber).HasMaxLength(20);
 
-
-
         // The relationships between User and other entity types
         // Note that these relationships are configured with no navigation properties
 
@@ -53,6 +51,11 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
 
         // Each User can have many ChatSessions
         builder.HasMany<ChatSession>()
+            .WithOne()
+            .HasForeignKey(x => x.AppUserId);
+
+        // Each User can have many RefreshTokens
+        builder.HasMany<RefreshToken>()
             .WithOne()
             .HasForeignKey(x => x.AppUserId);
 
