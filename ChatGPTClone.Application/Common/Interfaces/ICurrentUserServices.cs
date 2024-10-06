@@ -3,4 +3,5 @@
 public interface ICurrentUserServices
 {
     Guid UserId { get; }
+    string IpAddress { get; }
 }

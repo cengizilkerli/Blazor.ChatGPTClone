@@ -1,153 +1,201 @@
-﻿using ChatGPTClone.Application.Common.Interfaces;
+﻿using System.Web;
+using ChatGPTClone.Application.Common.Interfaces;
 using ChatGPTClone.Application.Common.Models.Identity;
 using ChatGPTClone.Application.Common.Models.Jwt;
+using ChatGPTClone.Domain.Entities;
+using ChatGPTClone.Domain.Settings;
 using ChatGPTClone.Infrastructure.Identity;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Web;
+using Microsoft.Extensions.Options;
 
 namespace ChatGPTClone.Infrastructure.Services;
 
 public class IdentityManager : IIdentityService
 {
-    private readonly UserManager<AppUser> _userManager;
-    private readonly IJwtService _jwtService;
+	private readonly UserManager<AppUser> _userManager;
+	private readonly IJwtService _jwtService;
+	private readonly JwtSettings _jwtSettings;
+	private readonly IApplicationDbContext _context;
+	private readonly ICurrentUserServices _currentUserService;
 
-    public IdentityManager(UserManager<AppUser> userManager, IJwtService jwtService)
-    {
-        _userManager = userManager;
-        _jwtService = jwtService;
-    }
 
-    // Kullanıcının kimliğini doğrular.
-    public async Task<bool> AuthenticateAsync(IdentityAuthenticateRequest request, CancellationToken cancellationToken)
-    {
-        // Kullanıcıyı e-posta adresine göre bul.
-        var user = await _userManager.FindByEmailAsync(request.Email);
+	public IdentityManager(UserManager<AppUser> userManager, IJwtService jwtService, IOptions<JwtSettings> jwtSettings, IApplicationDbContext context, ICurrentUserServices currentUserService)
+	{
+		_userManager = userManager;
+		_jwtService = jwtService;
+		_context = context;
+		_jwtSettings = jwtSettings.Value;
+		_currentUserService = currentUserService;
+	}
 
-        // Kullanıcı bulunamazsa false döndür.
-        if (user is null) return false;
+	// Kullanıcının kimliğini doğrular.
+	public async Task<bool> AuthenticateAsync(IdentityAuthenticateRequest request, CancellationToken cancellationToken)
+	{
+		// Kullanıcıyı e-posta adresine göre bul.
+		var user = await _userManager.FindByEmailAsync(request.Email);
 
-        // Kullanıcının parolasını kontrol et ve sonucu döndür.
-        return await _userManager.CheckPasswordAsync(user, request.Password);
-    }
+		// Kullanıcı bulunamazsa false döndür.
+		if (user is null) return false;
 
-    // E-posta adresinin veritabanında olup olmadığını kontrol eder.
-    public Task<bool> CheckEmailExistsAsync(string email, CancellationToken cancellationToken)
-    {
-        return _userManager
-        .Users
-        .AnyAsync(x => x.Email == email, cancellationToken);
-    }
+		// Kullanıcının parolasını kontrol et ve sonucu döndür.
+		return await _userManager.CheckPasswordAsync(user, request.Password);
+	}
 
-    public Task<bool> CheckIfEmailVerifiedAsync(string email, CancellationToken cancellationToken)
-    {
-        return _userManager
-        .Users
-        .AnyAsync(x => x.Email == email && x.EmailConfirmed, cancellationToken);
-    }
+	// E-posta adresinin veritabanında olup olmadığını kontrol eder.
+	public Task<bool> CheckEmailExistsAsync(string email, CancellationToken cancellationToken)
+	{
+		return _userManager
+		.Users
+		.AnyAsync(x => x.Email == email, cancellationToken);
+	}
 
-    public async Task<bool> CheckSecurityStampAsync(Guid userId, string securityStamp, CancellationToken cancellationToken)
-    {
-        /*
-        return _userManager
-        .Users
-        .AnyAsync(x => x.Id == userId && x.SecurityStamp == securityStamp, cancellationToken);
-        */
+	public Task<bool> CheckIfEmailVerifiedAsync(string email, CancellationToken cancellationToken)
+	{
+		return _userManager
+		.Users
+		.AnyAsync(x => x.Email == email && x.EmailConfirmed, cancellationToken);
+	}
 
-        var user = await _userManager.FindByIdAsync(userId.ToString());
+	public async Task<bool> CheckSecurityStampAsync(Guid userId, string securityStamp, CancellationToken cancellationToken)
+	{
+		var user = await _userManager.FindByIdAsync(userId.ToString());
 
-        return string.Equals(user?.SecurityStamp, securityStamp);
-    }
+		return string.Equals(securityStamp, user.SecurityStamp);
+	}
 
-    public async Task<IdentityCreateEmailTokenResponse> CreateEmailTokenAsync(IdentityCreateEmailTokenRequest request, CancellationToken cancellationToken)
-    {
-        var user = await _userManager.FindByEmailAsync(request.Email);
+	public async Task<IdentityCreateEmailTokenResponse> CreateEmailTokenAsync(IdentityCreateEmailTokenRequest request, CancellationToken cancellationToken)
+	{
+		var user = await _userManager.FindByEmailAsync(request.Email);
 
-        var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+		var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-        // Kayıt yanıtını döndür.
-        return new IdentityCreateEmailTokenResponse(emailToken);
-    }
+		return new IdentityCreateEmailTokenResponse(token);
+	}
 
-    // Kullanıcının giriş yapmasını sağlar.
-    public async Task<IdentityLoginResponse> LoginAsync(IdentityLoginRequest request, CancellationToken cancellationToken)
-    {
-        // Kullanıcıyı e-posta adresine göre bul.
-        var user = await _userManager.FindByEmailAsync(request.Email);
+	// Kullanıcının giriş yapmasını sağlar.
+	public async Task<IdentityLoginResponse> LoginAsync(IdentityLoginRequest request, CancellationToken cancellationToken)
+	{
+		// Kullanıcıyı e-posta adresine göre bul.
+		var user = await _userManager.FindByEmailAsync(request.Email);
 
-        // Kullanıcının rollerini al.
-        var roles = await _userManager.GetRolesAsync(user);
+		// Kullanıcının rollerini al.
+		var roles = await _userManager.GetRolesAsync(user);
 
-        // JWT oluşturma isteği oluştur.
-        var jwtRequest = new JwtGenerateTokenRequest(user.Id, user.Email, roles);
+		// JWT oluşturma isteği oluştur.
+		var jwtRequest = new JwtGenerateTokenRequest(user.Id, user.Email, roles);
 
-        // JWT oluştur.
-        var jwtResponse = _jwtService.GenerateToken(jwtRequest);
+		// JWT oluştur.
+		var jwtResponse = _jwtService.GenerateToken(jwtRequest);
 
-        // Giriş yanıtını döndür.
-        return new IdentityLoginResponse(jwtResponse.Token, jwtResponse.ExpiresAt);
-    }
+		// Refresh token oluştur.
+		var refreshToken = await CreateRefreshTokenAsync(user, cancellationToken);
 
-    // Yeni bir kullanıcı kaydeder.
-    public async Task<IdentityRegisterResponse> RegisterAsync(IdentityRegisterRequest request, CancellationToken cancellationToken)
-    {
-        // Yeni bir kullanıcı kimliği oluştur.
-        var userId = Ulid
-        .NewUlid()
-        .ToGuid();
+		// Giriş yanıtını döndür.
+		return new IdentityLoginResponse(jwtResponse.Token, jwtResponse.ExpiresAt, refreshToken.Token, refreshToken.Expires);
+	}
 
-        // Yeni bir kullanıcı nesnesi oluştur.
-        var user = new AppUser
-        {
-            Id = userId,
-            Email = request.Email,
-            UserName = request.Email,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            CreatedByUserId = userId.ToString(),
-            CreatedOn = DateTimeOffset.UtcNow,
-            EmailConfirmed = false,
-        };
+	public async Task<IdentityRefreshTokenResponse> RefreshTokenAsync(IdentityRefreshTokenRequest request, CancellationToken cancellationToken)
+	{
+		var userId = _jwtService.GetUserIdFromJwt(request.AccessToken);
 
-        // Kullanıcıyı veritabanına kaydet.
-        var result = await _userManager.CreateAsync(user, request.Password);
+		// Kullanıcıyı ID'sine göre bul.
+		var user = await _userManager.FindByIdAsync(userId.ToString());
 
-        // Kayıt işlemi başarısız olursa hata fırlat.
-        if (!result.Succeeded) CreateAndThrowValidationException(result.Errors);
+		// _collection.FindOne
 
-        // E-posta onaylama jetonu oluştur.
-        var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+		// Kullanıcının rollerini al.
+		var roles = await _userManager.GetRolesAsync(user);
 
-        // Kayıt yanıtını döndür.
-        return new IdentityRegisterResponse(userId, user.Email, emailToken);
-    }
+		// JWT oluşturma isteği oluştur.
+		var jwtRequest = new JwtGenerateTokenRequest(user.Id, user.Email, roles);
 
-    public async Task<IdentityVerifyEmailResponse> VerifyEmailAsync(IdentityVerifyEmailRequest request, CancellationToken cancellationToken)
-    {
-        var user = await _userManager.FindByEmailAsync(request.Email);
+		// JWT oluştur.
+		var jwtResponse = _jwtService.GenerateToken(jwtRequest);
 
-        //var decodedToken = HttpUtility.UrlDecode(request.Token);
+		// Giriş yanıtını döndür.
+		return new IdentityRefreshTokenResponse(jwtResponse.Token, jwtResponse.ExpiresAt);
+	}
 
-        var result = await _userManager.ConfirmEmailAsync(user, request.Token);
+	// Yeni bir kullanıcı kaydeder.
+	public async Task<IdentityRegisterResponse> RegisterAsync(IdentityRegisterRequest request, CancellationToken cancellationToken)
+	{
+		// Yeni bir kullanıcı kimliği oluştur.
+		var userId = Ulid
+		.NewUlid()
+		.ToGuid();
 
-        if (!result.Succeeded)
-            CreateAndThrowValidationException(result.Errors);
+		// Yeni bir kullanıcı nesnesi oluştur.
+		var user = new AppUser
+		{
+			Id = userId,
+			Email = request.Email,
+			UserName = request.Email,
+			FirstName = request.FirstName,
+			LastName = request.LastName,
+			CreatedByUserId = userId.ToString(),
+			CreatedOn = DateTimeOffset.UtcNow,
+			EmailConfirmed = false,
+		};
 
-        return new IdentityVerifyEmailResponse(user.Email);
-    }
+		// Kullanıcıyı veritabanına kaydet.
+		var result = await _userManager.CreateAsync(user, request.Password);
 
-    // Doğrulama hatası oluşturur ve fırlatır.
-    private void CreateAndThrowValidationException(IEnumerable<IdentityError> errors)
-    {
-        // Hata mesajlarını ve özelliklerini içeren yeni bir doğrulama hatası oluştur.
-        var errorMessages = errors
-        .Select(x => new ValidationFailure(x.Code, x.Description))
-        .ToArray();
+		// Kayıt işlemi başarısız olursa hata fırlat.
+		if (!result.Succeeded) CreateAndThrowValidationException(result.Errors);
 
-        // Doğrulama hatasını fırlat.
-        throw new ValidationException(errorMessages);
-    }
+		// E-posta onaylama jetonu oluştur.
+		var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+		// Kayıt yanıtını döndür.
+		return new IdentityRegisterResponse(userId, user.Email, emailToken);
+	}
+
+	public async Task<IdentityVerifyEmailResponse> VerifyEmailAsync(IdentityVerifyEmailRequest request, CancellationToken cancellationToken)
+	{
+		var user = await _userManager.FindByEmailAsync(request.Email);
+
+		// var decodedToken = HttpUtility.UrlDecode(request.Token);
+
+		var result = await _userManager.ConfirmEmailAsync(user, request.Token);
+
+		if (!result.Succeeded)
+			CreateAndThrowValidationException(result.Errors);
+
+		return new IdentityVerifyEmailResponse(user.Email);
+	}
+
+	// Doğrulama hatası oluşturur ve fırlatır.
+	private void CreateAndThrowValidationException(IEnumerable<IdentityError> errors)
+	{
+		// Hata mesajlarını ve özelliklerini içeren yeni bir doğrulama hatası oluştur.
+		var errorMessages = errors
+		.Select(x => new ValidationFailure(x.Code, x.Description))
+		.ToArray();
+
+		// Doğrulama hatasını fırlat.
+		throw new ValidationException(errorMessages);
+	}
+
+	private async Task<RefreshToken> CreateRefreshTokenAsync(AppUser user, CancellationToken cancellationToken)
+	{
+		var refreshToken = new RefreshToken
+		{
+			CreatedByUserId = user.Id.ToString(),
+			CreatedOn = DateTimeOffset.UtcNow,
+			AppUserId = user.Id,
+			Token = Ulid.NewUlid().ToString(), // Rastegele token oluştur.
+			Expires = DateTime.UtcNow.Add(_jwtSettings.RefreshTokenExpiration), // Refresh tokenın süresini belirler.
+			SecurityStamp = user.SecurityStamp, // Kullanıcının güvenlik damgasını kullanır.
+			CreatedByIp = _currentUserService.IpAddress, // İp adresini kullanır.
+		};
+
+		await _context.RefreshTokens.AddAsync(refreshToken, cancellationToken);
+
+		await _context.SaveChangesAsync(cancellationToken);
+
+		return refreshToken;
+	}
 }
