@@ -1,90 +1,126 @@
-﻿using ChatGPTClone.Application.Common.Interfaces;
+﻿using System.Globalization;
+using System.Text;
+using ChatGPTClone.Application.Common.Interfaces;
 using ChatGPTClone.WebApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Globalization;
-using System.Text;
 
-namespace ChatGPTClone.WebApi;
-
-public static class DependencyInjection
+namespace ChatGPTClone.WebApi
 {
-    public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
+    public static class DependencyInjection
     {
-        services.AddMemoryCache();
-
-        services.AddCors(options =>
+        public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
-            options.AddPolicy("AllowAll",
-                builder =>
-                {
-                    builder.AllowAnyMethod()
-                           .AllowCredentials()
-                           .SetIsOriginAllowed((host) => true)
-                           .AllowAnyHeader(); 
-                });
-        });
 
-        services.AddHttpContextAccessor();
+            services.AddMemoryCache();
 
-        services.AddScoped<ICurrentUserServices, CurrentUserManager>();
+            services.AddCors(options =>
+                        {
+                            options.AddPolicy("AllowAll",
+                                builder => builder
+                                    .AllowAnyMethod()
+                                    .AllowCredentials()
+                                    .SetIsOriginAllowed((host) => true)
+                                    .AllowAnyHeader());
+                        });
 
-        services.AddSingleton<IEnvironmentService, EnvironmentManager>(sp => new EnvironmentManager(environment.WebRootPath));
+            services.AddHttpContextAccessor();
 
-        services.AddLocalization(option => option.ResourcesPath = "Resources");
+            services.AddScoped<ICurrentUserService, CurrentUserManager>();
 
-        services.Configure<RequestLocalizationOptions>(option =>
-        {
-            var defaultCulture = new CultureInfo("tr-TR");
+            services.AddSingleton<IEnvironmentService, EnvironmentManager>(sp => new EnvironmentManager(environment.WebRootPath));
 
-            var supportedCultures = new List<CultureInfo>
+            //Localization
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            services.Configure<RequestLocalizationOptions>(options =>
             {
-                defaultCulture,
-                new("en-GB")
-            };
+                // Set the default culture
 
-            option.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(defaultCulture);
-            option.SupportedCultures = supportedCultures;
-            option.SupportedUICultures = supportedCultures;
-            option.ApplyCurrentCultureToResponseHeaders = true;
-        });
+                var defaultCulture = new CultureInfo("tr-TR");
 
-        services.AddSwaggerGen(setupAction =>
-        {
+                // Set supported cultures
 
-            setupAction.SwaggerDoc(
-                "v1",
-                new OpenApiInfo()
+                var supportedCultures = new List<CultureInfo>
                 {
-                    Title = "ChatGPT Clone Web API",
-                    Version = "1",
-                    Description = "Through this API you can access MextFullStackSaaS App's details",
-                    Contact = new OpenApiContact()
-                    {
-                        Email = "alper.tunga@yazilim.academy",
-                        Name = "Alper Tunga",
-                        Url = new Uri("https://yazilim.academy/")
-                    },
-                    
-                    License = new OpenApiLicense()
-                    {
-                        Name = "© 2024 Yazılım Academy Tüm Hakları Saklıdır",
-                        Url = new Uri("https://yazilim.academy/")
-                    }
-                });
+                    defaultCulture,
+                    new CultureInfo("en-GB")
+                };
 
-            setupAction.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                // Add supported cultures
+                options.DefaultRequestCulture = new RequestCulture(defaultCulture);
 
-            setupAction.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer",
-                BearerFormat = "JWT",
-                Description = $"Input your Bearer token in this format - Bearer token to access this API",
+                options.SupportedCultures = supportedCultures;
+
+                options.SupportedUICultures = supportedCultures;
+
+                options.ApplyCurrentCultureToResponseHeaders = true;
             });
 
-            setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                var secretKey = configuration["JwtSettings:SecretKey"];
+
+                if (string.IsNullOrEmpty(secretKey))
+                    throw new ArgumentNullException("JwtSettings:SecretKey is not set.");
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["JwtSettings:Issuer"],
+                    ValidAudience = configuration["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            services.AddSwaggerGen(setupAction =>
+            {
+
+                setupAction.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo()
+                    {
+                        Title = "ChatGPTClone Web API",
+                        Version = "1",
+                        Description = "Through this API you can access ChatGPTClone App's details",
+                        Contact = new OpenApiContact()
+                        {
+                            Email = "alper.tunga@yazilim.academy",
+                            Name = "Alper Tunga",
+                            Url = new Uri("https://yazilim.academy/")
+                        },
+                        License = new OpenApiLicense()
+                        {
+                            Name = "© 2024 Yazılım Academy Tüm Hakları Saklıdır",
+                            Url = new Uri("https://yazilim.academy/")
+                        }
+                    });
+
+                setupAction.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+
+                setupAction.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Description = $"Input your Bearer token in this format - Bearer token to access this API",
+                });
+
+                setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -97,36 +133,9 @@ public static class DependencyInjection
                         }, new List<string>()
                     },
                 });
-        });
+            });
 
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            var secretKey = configuration["JwtSettings:SecretKey"];
-
-            if (string.IsNullOrEmpty(secretKey))
-                throw new ArgumentNullException("JwtSettings:SecretKey is not set.");
-
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = configuration["JwtSettings:Issuer"],
-                ValidAudience = configuration["JwtSettings:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-                ClockSkew = TimeSpan.Zero
-            };
-        });
-
-        return services;
+            return services;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ChatGPTClone.Domain.Common;
+using ChatGPTClone.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace ChatGPTClone.Infrastructure.Identity;

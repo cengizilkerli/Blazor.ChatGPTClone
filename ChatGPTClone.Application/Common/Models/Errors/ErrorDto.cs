@@ -1,13 +1,20 @@
-﻿namespace ChatGPTClone.Application.Common.Models.Errors;
-
-public class ErrorDto
+﻿namespace ChatGPTClone.Application.Common.Models.Errors
 {
-    public string PropertyName { get; set; }
-    public IReadOnlyList<string> Messages { get; set; }
-
-    public ErrorDto(string propertyName, List<string> messages)
+    public class ErrorDto
     {
-        PropertyName = propertyName;
-        Messages = messages;
+        // Email
+        public string PropertyName { get; set; }
+
+        // "Email is required."
+        // "Email is not a valid email address."
+        // "Email is too long."
+        public IReadOnlyList<string> Messages { get; set; }
+
+        public ErrorDto(string propertyName, List<string> messages)
+        {
+            PropertyName = propertyName;
+
+            Messages = messages;
+        }
     }
 }

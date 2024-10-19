@@ -1,3 +1,4 @@
+using System;
 using ChatGPTClone.Application.Common.Models.General;
 using ChatGPTClone.Domain.Entities;
 using ChatGPTClone.Domain.Enums;
@@ -25,7 +26,7 @@ public class ChatSessionCreateRangeCommand : IRequest<ResponseDto<int>>
                 Model = Model,
                 AppUserId = appUserId,
                 CreatedOn = DateTime.UtcNow,
-                Title = Content.Substring(0, 50),
+                Title = Content.Length >= 50 ? Content.Substring(0, 50) : Content,
                 Threads = new List<ChatThread>(){
                 new ChatThread
                 {

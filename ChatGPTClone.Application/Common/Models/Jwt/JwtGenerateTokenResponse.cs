@@ -1,14 +1,15 @@
-﻿namespace ChatGPTClone.Application.Common.Models.Jwt;
-
-public class JwtGenerateTokenResponse
+﻿namespace ChatGPTClone.Application.Common.Models.Jwt
 {
-    public string Token { get; set; }
-    public DateTime ExpiresAt { get; set; }
-
-    public JwtGenerateTokenResponse(string token, DateTime expiresAt)
+    public class JwtGenerateTokenResponse
     {
-        Token = token;
+        public string Token { get; set; }
+        public DateTime ExpiresAt { get; set; }
 
-        ExpiresAt = expiresAt;
+        public JwtGenerateTokenResponse(string token, DateTime expiresAt)
+        {
+            Token = token;
+
+            ExpiresAt = expiresAt;
+        }
     }
 }

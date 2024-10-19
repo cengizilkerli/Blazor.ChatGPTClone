@@ -1,22 +1,22 @@
 using System;
+using ChatGPTClone.Application.Common.Interfaces;
 using ChatGPTClone.Application.Features.ChatSessions.Queries.GetAll;
 using ChatGPTClone.Application.Features.ChatSessions.Queries.GetById;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using ChatGPTClone.Application.Common.Interfaces;
 
 namespace ChatGPTClone.Infrastructure.Services;
 
 public class ChatSessionCacheManager : IChatSessionCacheService
 {
-    private readonly ICurrentUserServices _currentUserService;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IApplicationDbContext _context;
     private readonly IMemoryCache _memoryCache;
     private readonly MemoryCacheEntryOptions _cacheOptions;
     private const string GetAllKey = "ChatSession:GetAll:";
     private const string GetByIdKey = "ChatSession:GetById:";
 
-    public ChatSessionCacheManager(IMemoryCache memoryCache, ICurrentUserServices currentUserService, IApplicationDbContext context)
+    public ChatSessionCacheManager(IMemoryCache memoryCache, ICurrentUserService currentUserService, IApplicationDbContext context)
     {
         _memoryCache = memoryCache;
 
@@ -31,7 +31,6 @@ public class ChatSessionCacheManager : IChatSessionCacheService
 
     public async Task<List<ChatSessionGetAllDto>> GetAllAsync(CancellationToken cancellationToken)
     {
-
         var cacheKey = $"{GetAllKey}{_currentUserService.UserId}";
 
         return await _memoryCache.GetOrCreateAsync(cacheKey, async entry =>
@@ -91,15 +90,13 @@ public class ChatSessionCacheManager : IChatSessionCacheService
         if (_memoryCache.TryGetValue(cacheKey, out ChatSessionGetByIdDto cachedResult))
         {
             if (cachedResult.AppUserId == _currentUserService.UserId)
-            {
                 return true;
-            }
 
             return false;
         }
 
-        return await _context.ChatSessions
-            .Where(x => x.AppUserId == _currentUserService.UserId)
-            .AnyAsync(x => x.AppUserId == _currentUserService.UserId && x.Id == id, cancellationToken);
+        return await _context
+        .ChatSessions
+        .AnyAsync(x => x.AppUserId == _currentUserService.UserId && x.Id == id, cancellationToken);
     }
 }

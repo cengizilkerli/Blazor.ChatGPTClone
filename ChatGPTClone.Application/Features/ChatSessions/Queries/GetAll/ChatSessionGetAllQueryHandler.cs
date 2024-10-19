@@ -1,19 +1,20 @@
-﻿using MediatR;
+﻿using ChatGPTClone.Application.Common.Interfaces;
+using MediatR;
 
-namespace ChatGPTClone.Application.Features.ChatSessions.Queries.GetAll;
-
-public class ChatSessionGetAllQueryHandler : IRequestHandler<ChatSessionGetAllQuery, List<ChatSessionGetAllDto>>
+namespace ChatGPTClone.Application.Features.ChatSessions.Queries.GetAll
 {
-   
-    private readonly IChatSessionCacheService _chatSessionCacheService;
-
-    public ChatSessionGetAllQueryHandler(IChatSessionCacheService chatSessionCacheService)
+    public class ChatSessionGetAllQueryHandler : IRequestHandler<ChatSessionGetAllQuery, List<ChatSessionGetAllDto>>
     {
-        _chatSessionCacheService = chatSessionCacheService;
-    }
+        private readonly IChatSessionCacheService _chatSessionCacheService;
 
-    public async Task<List<ChatSessionGetAllDto>> Handle(ChatSessionGetAllQuery request, CancellationToken cancellationToken)
-    {
-        return await _chatSessionCacheService.GetAllAsync(cancellationToken);
+        public ChatSessionGetAllQueryHandler(IChatSessionCacheService chatSessionCacheService)
+        {
+            _chatSessionCacheService = chatSessionCacheService;
+        }
+
+        public Task<List<ChatSessionGetAllDto>> Handle(ChatSessionGetAllQuery request, CancellationToken cancellationToken)
+        {
+            return _chatSessionCacheService.GetAllAsync(cancellationToken);
+        }
     }
 }

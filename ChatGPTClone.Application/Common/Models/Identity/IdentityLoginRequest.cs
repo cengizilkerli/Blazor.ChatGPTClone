@@ -1,14 +1,15 @@
-﻿namespace ChatGPTClone.Application.Common.Models.Identity;
-
-public class IdentityLoginRequest
+﻿namespace ChatGPTClone.Application.Common.Models.Identity
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
-
-    public IdentityLoginRequest(string email, string password)
+    public class IdentityLoginRequest
     {
-        Email = email;
+        public string Email { get; set; }
+        public string Password { get; set; }
 
-        Password = password;
+        public IdentityLoginRequest(string email, string password)
+        {
+            Email = email;
+
+            Password = password;
+        }
     }
 }

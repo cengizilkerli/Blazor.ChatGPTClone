@@ -8,18 +8,23 @@ using Serilog;
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+    .MinimumLevel.Warning()
     .CreateLogger();
 
 try
 {
-    Log.Information("Starting web application");
+    Log.Warning("Starting web application");
 
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddSerilog(); // <-- Add this line
+    builder.Services.AddSerilog();
 
+    // Add services to the container.
+
+    // Controller'larÄ± servis olarak ekle
     builder.Services.AddControllers(opt =>
     {
+        // Global exception filtresini ekle
         opt.Filters.Add<GlobalExceptionFilter>();
     });
 
@@ -29,7 +34,9 @@ try
     builder.Services.AddSwaggerGen();
 
     builder.Services.AddApplication();
+
     builder.Services.AddInfrastructure(builder.Configuration);
+
     builder.Services.AddWebApi(builder.Configuration, builder.Environment);
 
     var app = builder.Build();
@@ -43,22 +50,21 @@ try
         app.UseSwaggerUI();
     }
 
-    //null ise exception döndürür
-    var requestLocalizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
-
-    //null döndürür
-    //var requestLocalizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>()?.Value;
+    var requestLocalizationOptions = app.Services
+        .GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
 
     app.UseRequestLocalization(requestLocalizationOptions);
 
     app.UseHttpsRedirection();
 
     app.UseAuthentication();
+
     app.UseAuthorization();
 
     app.MapControllers();
 
     app.Run();
+
 }
 catch (Exception ex)
 {
@@ -67,4 +73,9 @@ catch (Exception ex)
 finally
 {
     Log.CloseAndFlush();
+}
+
+Func<IServiceProvider, object> EnvironmentManager(string webRootPath)
+{
+    throw new NotImplementedException();
 }

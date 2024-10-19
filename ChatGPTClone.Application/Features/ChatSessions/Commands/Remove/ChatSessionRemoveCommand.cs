@@ -11,4 +11,5 @@ public class ChatSessionRemoveCommand : IRequest<ResponseDto<Guid>>
     {
         Id = id;
     }
+
 }

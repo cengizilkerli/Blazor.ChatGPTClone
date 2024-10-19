@@ -1,4 +1,4 @@
-﻿using ChatGPTClone.Application.Common.Models.Email;
+using ChatGPTClone.Application.Common.Models.Email;
 
 namespace ChatGPTClone.Application.Common.Interfaces;
 

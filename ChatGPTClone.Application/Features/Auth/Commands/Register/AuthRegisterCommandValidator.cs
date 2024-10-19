@@ -1,4 +1,5 @@
-﻿using ChatGPTClone.Application.Common.Interfaces;
+using System;
+using ChatGPTClone.Application.Common.Interfaces;
 using FluentValidation;
 
 namespace ChatGPTClone.Application.Features.Auth.Commands.Register;

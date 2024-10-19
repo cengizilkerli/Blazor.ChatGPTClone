@@ -1,4 +1,4 @@
-﻿using ChatGPTClone.Application.Common.Models.OpenAI;
+using ChatGPTClone.Application.Common.Models.OpenAI;
 
 namespace ChatGPTClone.Application.Common.Interfaces;
 

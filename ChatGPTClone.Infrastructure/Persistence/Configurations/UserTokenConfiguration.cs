@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ChatGPTClone.Infrastructure.Persistence.Configurations;
 
-public class UserTokenConfiguration : IEntityTypeConfiguration<AppUserToken>
+public class UserTokenConfiguration:IEntityTypeConfiguration<AppUserToken>
 {
     public void Configure(EntityTypeBuilder<AppUserToken> builder)
     {

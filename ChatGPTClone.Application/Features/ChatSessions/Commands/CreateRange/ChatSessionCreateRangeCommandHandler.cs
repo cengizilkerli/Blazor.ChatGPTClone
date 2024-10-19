@@ -7,9 +7,9 @@ namespace ChatGPTClone.Application.Features.ChatSessions.Commands.CreateRange;
 public class ChatSessionCreateRangeCommandHandler : IRequestHandler<ChatSessionCreateRangeCommand, ResponseDto<int>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserServices _currentUserService;
+    private readonly ICurrentUserService _currentUserService;
 
-    public ChatSessionCreateRangeCommandHandler(IApplicationDbContext context, ICurrentUserServices currentUserService)
+    public ChatSessionCreateRangeCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
     {
         _context = context;
         _currentUserService = currentUserService;
@@ -26,4 +26,6 @@ public class ChatSessionCreateRangeCommandHandler : IRequestHandler<ChatSessionC
 
         return new ResponseDto<int>(chatSessions.Count(), "Chat sessions created successfully");
     }
+
+
 }

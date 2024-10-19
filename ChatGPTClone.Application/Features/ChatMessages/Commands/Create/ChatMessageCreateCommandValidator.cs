@@ -1,3 +1,4 @@
+using System;
 using ChatGPTClone.Application.Common.Interfaces;
 using ChatGPTClone.Application.Common.Localization;
 using FluentValidation;
@@ -42,7 +43,6 @@ public class ChatMessageCreateCommandValidator : AbstractValidator<ChatMessageCr
         if (string.IsNullOrEmpty(command.ThreadId))
             return true;
 
-
         var chatSession = await _context
         .ChatSessions
         .AsNoTracking()
@@ -53,6 +53,9 @@ public class ChatMessageCreateCommandValidator : AbstractValidator<ChatMessageCr
 
         return chatSession.Threads.Any(x => x.Id == command.ThreadId);
     }
+
+
+
 
     private Task<bool> IsChatSessionExistsAsync(Guid chatSessionId, CancellationToken cancellationToken)
     {

@@ -1,9 +1,10 @@
-﻿namespace ChatGPTClone.Application.Common.Localization;
-
-public class CommonLocalization
+﻿namespace ChatGPTClone.Application.Common.Localization
 {
-    public CommonLocalization()
+    public class CommonLocalization
     {
-        
+        public CommonLocalization()
+        {
+            
+        }
     }
 }

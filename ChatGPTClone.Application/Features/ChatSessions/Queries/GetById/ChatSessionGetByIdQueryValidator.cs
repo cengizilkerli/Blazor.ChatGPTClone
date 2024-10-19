@@ -1,27 +1,26 @@
-﻿using FluentValidation;
-using ChatGPTClone.Application.Common.Interfaces;
-namespace ChatGPTClone.Application.Features.ChatSessions.Queries.GetById;
+﻿using ChatGPTClone.Application.Common.Interfaces;
+using FluentValidation;
 
-public class ChatSessionGetByIdQueryValidator : AbstractValidator<ChatSessionGetByIdQuery>
+namespace ChatGPTClone.Application.Features.ChatSessions.Queries.GetById
 {
-    private readonly IChatSessionCacheService _chatSessionCacheService;
-
-    public ChatSessionGetByIdQueryValidator(IChatSessionCacheService chatSessionCacheService)
+    public class ChatSessionGetByIdQueryValidator : AbstractValidator<ChatSessionGetByIdQuery>
     {
-        _chatSessionCacheService = chatSessionCacheService;
-    }
+        private readonly IChatSessionCacheService _chatSessionCacheService;
 
-    public ChatSessionGetByIdQueryValidator()
-    {
-        RuleFor(p => p.Id)
-            .NotEmpty()
-            .NotNull()
-            .MustAsync(BeValidIdAsync)
-            .WithMessage("The selected Chat was not found!");
-    }
+        public ChatSessionGetByIdQueryValidator(IChatSessionCacheService chatSessionCacheService)
+        {
+            _chatSessionCacheService = chatSessionCacheService;
 
-    private Task<bool> BeValidIdAsync(Guid id, CancellationToken cancellationToken)
-    {
-        return _chatSessionCacheService.ExistsAsync(id, cancellationToken);
+            RuleFor(p => p.Id)
+                .NotEmpty()
+                .NotNull()
+                .MustAsync(BeValidIdAsync)
+                .WithMessage("The selected Chat was not found.");
+        }
+
+        private Task<bool> BeValidIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return _chatSessionCacheService.ExistsAsync(id, cancellationToken);
+        }
     }
 }

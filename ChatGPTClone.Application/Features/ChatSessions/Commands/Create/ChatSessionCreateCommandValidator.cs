@@ -2,18 +2,20 @@
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 
-namespace ChatGPTClone.Application.Features.ChatSessions.Commands.Create;
-
-public class ChatSessionCreateCommandValidator : AbstractValidator<ChatSessionCreateCommand>
+namespace ChatGPTClone.Application.Features.ChatSessions.Commands.Create
 {
-    public ChatSessionCreateCommandValidator(IStringLocalizer<CommonLocalization> localizer)
+    public class ChatSessionCreateCommandValidator : AbstractValidator<ChatSessionCreateCommand>
     {
-        RuleFor(x => x.Model)
-            .NotEmpty().WithMessage(x => localizer[CommonLocalizationKeys.ValidationIsRequired, nameof(x.Model)])
-            .IsInEnum().WithMessage(x => localizer[CommonLocalizationKeys.ValidationIsInvalid, nameof(x.Model)]);
+        public ChatSessionCreateCommandValidator(IStringLocalizer<CommonLocalization> localizer)
+        {
+            
+            RuleFor(x => x.Model)
+                .NotEmpty().WithMessage(x => localizer[CommonLocalizationKeys.ValidationIsRequired,nameof(x.Model)])
+                .IsInEnum().WithMessage(x => localizer[CommonLocalizationKeys.ValidationIsInvalid,nameof(x.Model)]);
 
-        RuleFor(x => x.Content)
-            .NotEmpty().WithMessage(x => localizer[CommonLocalizationKeys.ValidationIsRequired, nameof(x.Content)])
-            .Length(5, 4000).WithMessage(x => localizer[CommonLocalizationKeys.ValidationMustBeBetween, nameof(x.Content), 5, 4000]);
+            RuleFor(x => x.Content)
+                .NotEmpty().WithMessage(x => localizer[CommonLocalizationKeys.ValidationIsRequired, nameof(x.Content)])
+                .Length(5, 4000).WithMessage(x => localizer[CommonLocalizationKeys.ValidationMustBeBetween,nameof(x.Content),5,4000]);
+        }
     }
 }

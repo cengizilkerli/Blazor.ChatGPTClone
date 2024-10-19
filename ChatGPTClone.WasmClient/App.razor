@@ -1,15 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 
 <CascadingAuthenticationState>
-
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <Authorizing>
-                    <p>Giriş yapılıyor...</p>
+                    <p> Giriş yapiliyor... </p>
                 </Authorizing>
                 <NotAuthorized>
-                    <p>Bu sayfayı görmek için yetkiniz bulunmamaktadır.</p>
+                    <p> Bu sayfayi gormek icin yetkiniz yoktur.. </p>
                 </NotAuthorized>
             </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -21,5 +20,15 @@
             </LayoutView>
         </NotFound>
     </Router>
-
 </CascadingAuthenticationState>
+
+@* // Kullanici giris yaptiysa gorecek
+<Authorized>
+<p>Authorized</p>
+</Authorized>
+
+// Kullanici giris yapmadiysa gorecek
+<NotAuthorized>
+<p>Not Authorized</p>
+</NotAuthorized>
+*@

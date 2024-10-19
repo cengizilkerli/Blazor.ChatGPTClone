@@ -1,25 +1,29 @@
 ﻿using ChatGPTClone.Application.Common.Behaviours;
+using ChatGPTClone.Application.Common.Models.General;
+using ChatGPTClone.Application.Features.ChatSessions.Commands.Create;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace ChatGPTClone.Application;
-
-public static class DependencyInjection
+namespace ChatGPTClone.Application
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static class DependencyInjection
     {
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-        services.AddMediatR(config =>
+        public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-            // Validation PipeLine
-            config.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-        });
+            services.AddMediatR(config =>
+            {
+                config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 
-        return services;
+                // Validation PipeLine
+                config.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+
+            });
+
+            return services;
+        }
     }
 }

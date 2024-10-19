@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ChatGPTClone.Application.Common.Interfaces;
 using ChatGPTClone.Application.Common.Models.Email;
 using ChatGPTClone.Application.Common.Models.General;

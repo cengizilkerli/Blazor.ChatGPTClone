@@ -1,13 +1,14 @@
 ﻿using MediatR;
 
-namespace ChatGPTClone.Application.Features.ChatSessions.Queries.GetById;
-
-public class ChatSessionGetByIdQuery : IRequest<ChatSessionGetByIdDto>
+namespace ChatGPTClone.Application.Features.ChatSessions.Queries.GetById
 {
-    public Guid Id { get; set; }
-
-    public ChatSessionGetByIdQuery(Guid id)
+    public sealed class ChatSessionGetByIdQuery:IRequest<ChatSessionGetByIdDto>
     {
-        Id = id;
+        public Guid Id { get; set; }
+
+        public ChatSessionGetByIdQuery(Guid id)
+        {
+            Id = id;
+        }
     }
 }

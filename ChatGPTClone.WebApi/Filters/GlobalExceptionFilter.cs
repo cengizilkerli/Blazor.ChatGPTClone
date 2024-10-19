@@ -1,4 +1,4 @@
-﻿using ChatGPTClone.Application.Common.Localization;
+using ChatGPTClone.Application.Common.Localization;
 using ChatGPTClone.Application.Common.Models.Errors;
 using ChatGPTClone.Application.Common.Models.General;
 using FluentValidation;
@@ -28,7 +28,7 @@ public class GlobalExceptionFilter : IExceptionFilter
         // Eğer hata bir doğrulama hatası ise
         if (context.Exception is ValidationException validationException)
         {
-            //var responseMessage = "One or more validation errors occurred.";
+
             var responseMessage = _localizer[CommonLocalizationKeys.GeneralValidationException];
 
             var errors = validationException.Errors

@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
@@ -62,7 +63,7 @@ public class JwtManager : IJwtService
         return new JwtGenerateTokenResponse(token, expirationDate);
     }
 
-    public Guid? GetUserIdFromJwt(string token)
+    public Guid GetUserIdFromJwt(string token)
     {
         try
         {

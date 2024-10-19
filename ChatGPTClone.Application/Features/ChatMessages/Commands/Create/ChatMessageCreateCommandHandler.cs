@@ -13,9 +13,9 @@ public class ChatMessageCreateCommandHandler : IRequestHandler<ChatMessageCreate
 {
     private readonly IApplicationDbContext _context;
     private readonly IOpenAiService _openAiService;
-    private readonly ICurrentUserServices _currentUserService;
+    private readonly ICurrentUserService _currentUserService;
 
-    public ChatMessageCreateCommandHandler(IApplicationDbContext context, IOpenAiService openAiService, ICurrentUserServices currentUserService)
+    public ChatMessageCreateCommandHandler(IApplicationDbContext context, IOpenAiService openAiService, ICurrentUserService currentUserService)
     {
         _context = context;
         _openAiService = openAiService;

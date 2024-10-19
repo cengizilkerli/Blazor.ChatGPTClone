@@ -1,5 +1,5 @@
-﻿using ChatGPTClone.Application.Common.Interfaces;
-using ChatGPTClone.Application.Features.VerifyEmail;
+using System;
+using ChatGPTClone.Application.Common.Interfaces;
 using FluentValidation;
 
 namespace ChatGPTClone.Application.Features.Auth.Commands.VerifyEmail;
@@ -13,12 +13,16 @@ public class AuthVerifyEmailCommandValidator : AbstractValidator<AuthVerifyEmail
         _identityService = identityService;
 
         RuleFor(x => x.Email)
-        .NotEmpty().EmailAddress()
-        .MustAsync(EmailExists).WithMessage("Email not found.");
+        .NotEmpty()
+        .EmailAddress()
+        .MustAsync(EmailExists)
+        .WithMessage("Email not found.");
 
         RuleFor(x => x.Token)
-            .NotEmpty()
-            .MinimumLength(20).WithMessage("Token is invalid");
+        .NotEmpty()
+        .MinimumLength(20)
+        .WithMessage("Token is invalid.");
+
     }
 
     private Task<bool> EmailExists(string email, CancellationToken cancellationToken)

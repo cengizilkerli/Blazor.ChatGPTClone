@@ -1,4 +1,3 @@
-
 using System.Net.Http.Headers;
 using Blazored.LocalStorage;
 using ChatGPTClone.Application.Features.Auth.Commands.Login;
@@ -18,10 +17,6 @@ public class HttpClientAuthDelegator : DelegatingHandler
     {
         var authLoginDto = await _localStorage.GetItemAsync<AuthLoginDto>("user-token");
 
-        // if (authLoginDto is not null && !string.IsNullOrEmpty(authLoginDto.Token))
-        //     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authLoginDto.Token);
-
-
         if (authLoginDto is not null && !string.IsNullOrEmpty(authLoginDto.Token))
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authLoginDto.Token);
@@ -29,7 +24,6 @@ public class HttpClientAuthDelegator : DelegatingHandler
             Console.WriteLine($"Token: {authLoginDto.Token}");
             Console.WriteLine($"Refresh token: {authLoginDto.RefreshToken}");
         }
-
 
         return await base.SendAsync(request, cancellationToken);
 

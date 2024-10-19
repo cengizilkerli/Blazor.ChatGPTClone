@@ -1,7 +1,6 @@
-﻿using ChatGPTClone.Application.Common.Interfaces;
+using ChatGPTClone.Application.Common.Interfaces;
 using ChatGPTClone.Application.Common.Models.General;
 using ChatGPTClone.Application.Common.Models.Identity;
-using ChatGPTClone.Application.Features.VerifyEmail;
 using MediatR;
 
 namespace ChatGPTClone.Application.Features.Auth.Commands.VerifyEmail;

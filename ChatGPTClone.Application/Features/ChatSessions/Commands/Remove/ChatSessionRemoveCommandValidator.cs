@@ -7,13 +7,13 @@ namespace ChatGPTClone.Application.Features.ChatSessions.Commands.Remove;
 public class ChatSessionRemoveCommandValidator : AbstractValidator<ChatSessionRemoveCommand>
 {
     private readonly IApplicationDbContext _dbContext;
-    private readonly ICurrentUserServices _currentUserService;
+    private readonly ICurrentUserService _currentUserService;
 
-    public ChatSessionRemoveCommandValidator(IApplicationDbContext dbContext, ICurrentUserServices currentUserService)
+    public ChatSessionRemoveCommandValidator(IApplicationDbContext dbContext, ICurrentUserService currentUserService)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
-        
+
         RuleFor(p => p.Id)
             .NotEmpty()
             .NotNull()

@@ -1,7 +1,7 @@
-﻿using ChatGPTClone.Application.Common.Interfaces;
+using System.Web;
+using ChatGPTClone.Application.Common.Interfaces;
 using ChatGPTClone.Application.Common.Models.Email;
 using Resend;
-using System.Web;
 
 namespace ChatGPTClone.Infrastructure.Services;
 
@@ -27,15 +27,18 @@ public class ResendEmailManager : IEmailService
 
         html = html.Replace("{{title}}", emailTitle);
 
+        html = html.Replace("{{greetings}}", $"Merhaba {emailVerificationDto.Email}");
+
         html = html.Replace("{{message}}", "E-Posta doğrulama işleminizi tamamlamak için aşağıdaki linke tıklayınız.");
 
         html = html.Replace("{{verifyButtonText}}", "E-Posta Doğrula");
 
         var token = HttpUtility.UrlEncode(emailVerificationDto.Token);
 
-        var emailVerificationUrl = $"www.google.com.tr/verify-email?email={emailVerificationDto.Email}&token={token}";
+        var emailVerificationUrl = $"http://localhost:5253/auth/verify-email?email={emailVerificationDto.Email}&token={token}";
 
         html = html.Replace("{{verifyButtonLink}}", emailVerificationUrl);
+
 
         var message = new EmailMessage();
         message.From = "noreply@yazilim.academy";

@@ -1,3 +1,4 @@
+using System;
 using ChatGPTClone.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -66,5 +67,6 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
             .HasMaxLength(150);
 
         builder.ToTable("RefreshTokens");
+
     }
 }

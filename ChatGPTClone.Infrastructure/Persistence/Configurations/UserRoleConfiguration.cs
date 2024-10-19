@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ChatGPTClone.Infrastructure.Persistence.Configurations;
 
-public class UserRoleConfiguration : IEntityTypeConfiguration<AppUserRole>
+public class UserRoleConfiguration:IEntityTypeConfiguration<AppUserRole>
 {
     public void Configure(EntityTypeBuilder<AppUserRole> builder)
     {

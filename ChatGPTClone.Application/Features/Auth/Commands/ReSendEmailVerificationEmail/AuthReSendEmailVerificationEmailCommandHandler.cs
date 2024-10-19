@@ -1,8 +1,8 @@
-﻿using ChatGPTClone.Application.Common.Interfaces;
+using System;
+using ChatGPTClone.Application.Common.Interfaces;
 using ChatGPTClone.Application.Common.Models.Email;
 using ChatGPTClone.Application.Common.Models.General;
 using ChatGPTClone.Application.Common.Models.Identity;
-using ChatGPTClone.Application.Features.ReSendEmailVerificationEmail;
 using MediatR;
 
 namespace ChatGPTClone.Application.Features.Auth.Commands.ReSendEmailVerificationEmail;
@@ -27,4 +27,6 @@ public class AuthReSendEmailVerificationEmailCommandHandler : IRequestHandler<Au
 
         return new ResponseDto<string>(data: response.Token, message: "Email verification email sent.");
     }
+
+
 }

@@ -1,3 +1,4 @@
+
 namespace ChatGPTClone.Application.Common.Models.Identity;
 
 public class IdentityRefreshTokenRequest

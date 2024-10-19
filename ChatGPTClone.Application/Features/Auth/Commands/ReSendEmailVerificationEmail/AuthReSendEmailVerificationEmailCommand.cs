@@ -1,7 +1,8 @@
-﻿using ChatGPTClone.Application.Common.Models.General;
+using System;
+using ChatGPTClone.Application.Common.Models.General;
 using MediatR;
 
-namespace ChatGPTClone.Application.Features.ReSendEmailVerificationEmail;
+namespace ChatGPTClone.Application.Features.Auth.Commands.ReSendEmailVerificationEmail;
 
 public class AuthReSendEmailVerificationEmailCommand : IRequest<ResponseDto<string>>
 {
@@ -11,4 +12,5 @@ public class AuthReSendEmailVerificationEmailCommand : IRequest<ResponseDto<stri
     {
         Email = email;
     }
+
 }

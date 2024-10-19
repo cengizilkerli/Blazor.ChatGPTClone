@@ -104,6 +104,35 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Token = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Expires = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedByIp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
+                    SecurityStamp = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Revoked = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    RevokedByIp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
+                    AppUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CreatedByUserId = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    ModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    ModifiedByUserId = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Users_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserClaims",
                 columns: table => new
                 {
@@ -191,7 +220,7 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedByUserId", "CreatedOn", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "ModifiedByUserId", "ModifiedOn", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("2798212b-3e5d-4556-8629-a64eb70da4a8"), 0, "0415856b-375f-40bb-99c9-c8ffc5fc67d5", "2798212b-3e5d-4556-8629-a64eb70da4a8", new DateTimeOffset(new DateTime(2024, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 3, 0, 0, 0)), "cengizilkerli@gmail.com", true, "Cengiz", "İlkerli", false, null, null, null, "CENGIZILKERLI@GMAIL.COM", "CENGIZILKERLI", "AQAAAAIAAYagAAAAEOOi/RN6gW6dtMHytYt+g/hTDsoc3WTb64DMb/Y9adCU3vLg7EimFS0poOWcYFIEJQ==", null, false, "6c079e71-127f-4d80-8f47-d1ff75e43042", false, "cengizilkerli" });
+                values: new object[] { new Guid("2798212b-3e5d-4556-8629-a64eb70da4a8"), 0, "ce5964d8-0221-45c3-b6fd-d292719d2c39", "2798212b-3e5d-4556-8629-a64eb70da4a8", new DateTimeOffset(new DateTime(2024, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 3, 0, 0, 0)), "cengizilkerli@gmail.com", true, "Cengiz", "İlkerli", false, null, null, null, "CENGIZILKERLI@GMAIL.COM", "CENGIZILKERLI", "AQAAAAIAAYagAAAAEFrls65JDYVARagFrTWoKw1rtcCZvM8N/K/SpzTEJxM81jSDGXS2fUkSASUFoRLnlg==", null, false, "322d3d9c-dff0-4343-9d0b-c28e6096457d", false, "cengizilkerli" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChatSessions_AppUserId",
@@ -203,6 +232,17 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
                 table: "ChatSessions",
                 column: "Threads")
                 .Annotation("Npgsql:IndexMethod", "gin");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_AppUserId_Token",
+                table: "RefreshTokens",
+                columns: new[] { "AppUserId", "Token" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_Token",
+                table: "RefreshTokens",
+                column: "Token",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
@@ -253,6 +293,9 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ChatSessions");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "RoleClaims");

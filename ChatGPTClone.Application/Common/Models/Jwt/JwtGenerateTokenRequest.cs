@@ -1,17 +1,18 @@
-﻿namespace ChatGPTClone.Application.Common.Models.Jwt;
-
-public class JwtGenerateTokenRequest
+﻿namespace ChatGPTClone.Application.Common.Models.Jwt
 {
-    public Guid Id { get; set; }
-    public string Email { get; set; }
-    public IList<string> Roles { get; set; }
-
-    public JwtGenerateTokenRequest(Guid id, string email, IList<string> roles)
+    public class JwtGenerateTokenRequest
     {
-        Id = id;
+        public Guid Id { get; set; }
+        public string Email { get; set; }
+        public IList<string> Roles { get; set; }
 
-        Email = email;
+        public JwtGenerateTokenRequest(Guid id, string email, IList<string> roles)
+        {
+            Id = id;
 
-        Roles = roles;
+            Email = email;
+
+            Roles = roles;
+        }
     }
 }

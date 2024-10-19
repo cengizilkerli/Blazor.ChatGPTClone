@@ -1,6 +1,7 @@
-﻿using ChatGPTClone.Application.Common.Interfaces;
-using ChatGPTClone.Application.Features.ReSendEmailVerificationEmail;
+using System;
+using ChatGPTClone.Application.Common.Interfaces;
 using FluentValidation;
+using FluentValidation.Validators;
 
 namespace ChatGPTClone.Application.Features.Auth.Commands.ReSendEmailVerificationEmail;
 

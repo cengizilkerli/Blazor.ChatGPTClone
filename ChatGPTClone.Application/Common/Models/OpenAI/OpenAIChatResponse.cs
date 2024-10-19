@@ -1,4 +1,4 @@
-﻿namespace ChatGPTClone.Application.Common.Models.OpenAI;
+namespace ChatGPTClone.Application.Common.Models.OpenAI;
 
 public class OpenAIChatResponse
 {

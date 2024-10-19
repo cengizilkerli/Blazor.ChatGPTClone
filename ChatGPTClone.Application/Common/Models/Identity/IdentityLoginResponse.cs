@@ -10,7 +10,7 @@ public class IdentityLoginResponse
     public IdentityLoginResponse(string token, DateTime expiresAt, string refreshToken, DateTime refreshTokenExpiresAt)
     {
         Token = token;
-        RefreshToken = refreshToken;    
+        RefreshToken = refreshToken;
         ExpiresAt = expiresAt;
         RefreshTokenExpiresAt = refreshTokenExpiresAt;
     }

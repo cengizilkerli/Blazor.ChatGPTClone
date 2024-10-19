@@ -1,4 +1,6 @@
-﻿namespace ChatGPTClone.Application.Common.Interfaces;
+
+
+namespace ChatGPTClone.Application.Common.Interfaces;
 
 public interface IEnvironmentService
 {

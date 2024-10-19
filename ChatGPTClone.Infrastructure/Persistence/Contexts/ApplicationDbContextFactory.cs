@@ -2,20 +2,22 @@
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace ChatGPTClone.Infrastructure.Persistence.Contexts;
-public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+namespace ChatGPTClone.Infrastructure.Persistence.Contexts
 {
-    public ApplicationDbContext CreateDbContext(string[] args)
+    public class ApplicationDbContextFactory: IDesignTimeDbContextFactory<ApplicationDbContext>
     {
-        var configuration = new ConfigurationBuilder()
-             .SetBasePath(Directory.GetCurrentDirectory())
-             .AddJsonFile("appsettings.json")
-             .Build();
+        public ApplicationDbContext CreateDbContext(string[] args)
+        {
+           var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
 
-        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("PostgreSql"));
+            optionsBuilder.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
 
-        return new ApplicationDbContext(optionsBuilder.Options);
+            return new ApplicationDbContext(optionsBuilder.Options);
+        }
     }
 }

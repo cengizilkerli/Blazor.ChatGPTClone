@@ -10,7 +10,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser, Role, Guid, AppUs
 {
     public DbSet<ChatSession> ChatSessions { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
-    
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
 

@@ -1,4 +1,4 @@
-﻿namespace ChatGPTClone.Application.Common.Models.Identity;
+namespace ChatGPTClone.Application.Common.Models.Identity;
 
 public class IdentityCreateEmailTokenRequest
 {

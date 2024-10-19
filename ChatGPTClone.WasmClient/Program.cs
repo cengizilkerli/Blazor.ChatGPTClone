@@ -1,10 +1,10 @@
-using System.Net.Security;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Blazored.LocalStorage;
 using ChatGPTClone.WasmClient;
 using ChatGPTClone.WasmClient.AuthStateProviders;
 using ChatGPTClone.WasmClient.HttpClientDelegators;
+using ChatGPTClone.WasmClient.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -28,8 +28,6 @@ builder.Services.AddScoped(sp =>
     return client;
 });
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseApiUrl) });
-
 builder.Services.AddBlazoredLocalStorage(config =>
 {
     config.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
@@ -44,5 +42,7 @@ builder.Services.AddBlazoredLocalStorage(config =>
 builder.Services.AddScoped<AuthenticationStateProvider, CustomJwtAuthStateProvider>();
 
 builder.Services.AddAuthorizationCore();
+
+builder.Services.AddScoped<ThemeService>();
 
 await builder.Build().RunAsync();

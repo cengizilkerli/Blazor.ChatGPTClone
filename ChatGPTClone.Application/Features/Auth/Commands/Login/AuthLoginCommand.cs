@@ -2,26 +2,28 @@
 using ChatGPTClone.Application.Common.Models.Identity;
 using MediatR;
 
-namespace ChatGPTClone.Application.Features.Auth.Commands.Login;
-
-public class AuthLoginCommand : IRequest<ResponseDto<AuthLoginDto>>
+namespace ChatGPTClone.Application.Features.Auth.Commands.Login
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
-
-    public AuthLoginCommand(string email, string password)
+    public class AuthLoginCommand : IRequest<ResponseDto<AuthLoginDto>>
     {
-        Email = email;
-        Password = password;
-    }
+        public string Email { get; set; }
+        public string Password { get; set; }
 
-    public IdentityLoginRequest ToIdentityLoginRequest()
-    {
-        return new IdentityLoginRequest(Email, Password);
-    }
+        public AuthLoginCommand(string email, string password)
+        {
+            Email = email;
 
-    public IdentityAuthenticateRequest ToIdentityAuthenticateRequest()
-    {
-        return new IdentityAuthenticateRequest(Email, Password);
+            Password = password;
+        }
+
+        public IdentityLoginRequest ToIdentityLoginRequest()
+        {
+            return new IdentityLoginRequest(Email, Password);
+        }
+
+        public IdentityAuthenticateRequest ToIdentityAuthenticateRequest()
+        {
+            return new IdentityAuthenticateRequest(Email, Password);
+        }
     }
 }

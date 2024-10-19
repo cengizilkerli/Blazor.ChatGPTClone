@@ -1,4 +1,4 @@
-﻿using ChatGPTClone.Domain.Enums;
+using ChatGPTClone.Domain.Enums;
 using ChatGPTClone.Domain.ValueObjects;
 
 namespace ChatGPTClone.Application.Common.Models.OpenAI;

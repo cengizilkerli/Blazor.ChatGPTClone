@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChatGPTClone.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240925165605_InitialCreate")]
+    [Migration("20241019062052_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -70,6 +70,67 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Threads"), "gin");
 
                     b.ToTable("ChatSessions", (string)null);
+                });
+
+            modelBuilder.Entity("ChatGPTClone.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("AppUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedByIp")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<string>("CreatedByUserId")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedByUserId")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<DateTimeOffset?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("Revoked")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RevokedByIp")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<string>("SecurityStamp")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.HasIndex("AppUserId", "Token");
+
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("ChatGPTClone.Infrastructure.Identity.AppUser", b =>
@@ -167,7 +228,7 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("2798212b-3e5d-4556-8629-a64eb70da4a8"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0415856b-375f-40bb-99c9-c8ffc5fc67d5",
+                            ConcurrencyStamp = "ce5964d8-0221-45c3-b6fd-d292719d2c39",
                             CreatedByUserId = "2798212b-3e5d-4556-8629-a64eb70da4a8",
                             CreatedOn = new DateTimeOffset(new DateTime(2024, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 3, 0, 0, 0)),
                             Email = "cengizilkerli@gmail.com",
@@ -177,9 +238,9 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "CENGIZILKERLI@GMAIL.COM",
                             NormalizedUserName = "CENGIZILKERLI",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOOi/RN6gW6dtMHytYt+g/hTDsoc3WTb64DMb/Y9adCU3vLg7EimFS0poOWcYFIEJQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFrls65JDYVARagFrTWoKw1rtcCZvM8N/K/SpzTEJxM81jSDGXS2fUkSASUFoRLnlg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6c079e71-127f-4d80-8f47-d1ff75e43042",
+                            SecurityStamp = "322d3d9c-dff0-4343-9d0b-c28e6096457d",
                             TwoFactorEnabled = false,
                             UserName = "cengizilkerli"
                         });
@@ -320,6 +381,15 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
                 });
 
             modelBuilder.Entity("ChatGPTClone.Domain.Entities.ChatSession", b =>
+                {
+                    b.HasOne("ChatGPTClone.Infrastructure.Identity.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ChatGPTClone.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("ChatGPTClone.Infrastructure.Identity.AppUser", null)
                         .WithMany()

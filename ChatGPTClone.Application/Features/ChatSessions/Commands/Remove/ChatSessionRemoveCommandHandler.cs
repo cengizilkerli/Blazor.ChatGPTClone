@@ -1,7 +1,10 @@
 using ChatGPTClone.Application.Common.Interfaces;
 using ChatGPTClone.Application.Common.Models.General;
+using ChatGPTClone.Application.Features.ChatSessions.Queries.GetAll;
+using ChatGPTClone.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ChatGPTClone.Application.Features.ChatSessions.Commands.Remove;
 
@@ -10,7 +13,7 @@ public class ChatSessionRemoveCommandHandler : IRequestHandler<ChatSessionRemove
     private readonly IApplicationDbContext _dbContext;
     private readonly IChatSessionCacheService _chatSessionCacheService;
 
-    public ChatSessionRemoveCommandHandler(IApplicationDbContext dbContext, ICurrentUserServices currentUserService, IChatSessionCacheService chatSessionCacheService)
+    public ChatSessionRemoveCommandHandler(IApplicationDbContext dbContext, IChatSessionCacheService chatSessionCacheService)
     {
         _dbContext = dbContext;
         _chatSessionCacheService = chatSessionCacheService;

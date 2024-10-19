@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ChatGPTClone.Infrastructure.Persistence.Configurations;
 
-public class UserClaimConfiguration : IEntityTypeConfiguration<AppUserClaim>
+public class UserClaimConfiguration:IEntityTypeConfiguration<AppUserClaim>
 {
     public void Configure(EntityTypeBuilder<AppUserClaim> builder)
     {

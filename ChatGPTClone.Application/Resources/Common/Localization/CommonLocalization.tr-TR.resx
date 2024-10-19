@@ -98,18 +98,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="GeneralValidationException" xml:space="preserve">
-    <value>Bir veya daha fazla validasyon hatası ile karşılaşıldı</value>
+    <value>Bir veya daha fazla validasyon hatasi ile karsilasildi.</value>
   </data>
   <data name="GeneralInternalServerException" xml:space="preserve">
-    <value>Beklenmedik bir sunucu hatası ile karşılaşıldı.</value>
+    <value>Beklenmedik bir sunucu hatasi ile karsilasildi.</value>
   </data>
   <data name="ValidationIsRequired" xml:space="preserve">
-    <value>{0} alanı zorunludur.</value>
+    <value>{0} alani zorunludur.</value>
   </data>
   <data name="ValidationIsInvalid" xml:space="preserve">
-    <value>{0} alanı geçersizdir.</value>
+    <value>{0} alani gecersizdir.</value>
   </data>
   <data name="ValidationMustBeBetween" xml:space="preserve">
-    <value>{0}  alanı {1} ve {2} karakter aralığında olmalıdır.</value>
+    <value>{0} alani {1} ile {2} karakter arasinda olmalidir.</value>
   </data>
 </root>

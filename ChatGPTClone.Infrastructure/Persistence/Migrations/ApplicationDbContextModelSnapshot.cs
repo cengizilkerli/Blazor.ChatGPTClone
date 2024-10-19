@@ -225,7 +225,7 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
                         {
                             Id = new Guid("2798212b-3e5d-4556-8629-a64eb70da4a8"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dc6b020c-69a7-4335-a2a1-80b24748d266",
+                            ConcurrencyStamp = "ce5964d8-0221-45c3-b6fd-d292719d2c39",
                             CreatedByUserId = "2798212b-3e5d-4556-8629-a64eb70da4a8",
                             CreatedOn = new DateTimeOffset(new DateTime(2024, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 3, 0, 0, 0)),
                             Email = "cengizilkerli@gmail.com",
@@ -235,9 +235,9 @@ namespace ChatGPTClone.Infrastructure.Persistence.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "CENGIZILKERLI@GMAIL.COM",
                             NormalizedUserName = "CENGIZILKERLI",
-                            PasswordHash = "AQAAAAIAAYagAAAAECq9An1YvgQjpZNjswgXBBpdo+Uvr2EdUpogxk7F5HFkvpPiW8F2qoo0PO1C1TN2rw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFrls65JDYVARagFrTWoKw1rtcCZvM8N/K/SpzTEJxM81jSDGXS2fUkSASUFoRLnlg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f8735293-ebb3-44b4-a613-c35ca2cb72ce",
+                            SecurityStamp = "322d3d9c-dff0-4343-9d0b-c28e6096457d",
                             TwoFactorEnabled = false,
                             UserName = "cengizilkerli"
                         });

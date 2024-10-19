@@ -14,14 +14,14 @@ namespace ChatGPTClone.Application.Features.ChatSessions.Commands.Create
     public class ChatSessionCreateCommandHandler : IRequestHandler<ChatSessionCreateCommand, ResponseDto<Guid>>
     {
         private readonly IApplicationDbContext _context;
-        private readonly ICurrentUserServices _currentUserService;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IOpenAiService _openAiService;
         private readonly IMemoryCache _memoryCache;
         private const string GetAllCacheKey = "ChatSessionGetAll_";
         private const string GetByIdCacheKey = "ChatSessionGetById_";
         private readonly MemoryCacheEntryOptions _cacheOptions;
 
-        public ChatSessionCreateCommandHandler(IApplicationDbContext context, ICurrentUserServices currentUserService, IOpenAiService openAiService, IMemoryCache memoryCache)
+        public ChatSessionCreateCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService, IOpenAiService openAiService, IMemoryCache memoryCache)
         {
             _context = context;
 
@@ -74,6 +74,7 @@ namespace ChatGPTClone.Application.Features.ChatSessions.Commands.Create
                 _memoryCache.Set(cacheKeyGetById, chatSessionGetByIdDto, _cacheOptions);
             }
         }
+
 
         private ChatMessage CreateAssistantChatMessage(string response, GptModelType model)
         {

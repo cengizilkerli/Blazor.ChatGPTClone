@@ -15,6 +15,7 @@ public sealed class AuthRefreshTokenCommandValidator : AbstractValidator<AuthRef
         _context = context;
         _jwtService = jwtService;
         _identityService = identityService;
+
         RuleFor(x => x.AccessToken)
             .NotEmpty()
             .WithMessage("AccessToken is required")
@@ -38,15 +39,15 @@ public sealed class AuthRefreshTokenCommandValidator : AbstractValidator<AuthRef
     {
         var userId = _jwtService.GetUserIdFromJwt(accessToken);
 
-        var refreshTokenEntity = 
-            await _context.RefreshTokens
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.AppUserId == userId && x.Token == refreshToken, cancellationToken);
+        var refreshTokenEntity = await _context
+        .RefreshTokens
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.AppUserId == userId && x.Token == refreshToken, cancellationToken);
 
-        if (refreshTokenEntity == null || refreshTokenEntity.Expires < DateTime.UtcNow || refreshTokenEntity.Revoked.HasValue)
+        if (refreshTokenEntity is null || refreshTokenEntity.Expires < DateTime.UtcNow || refreshTokenEntity.Revoked.HasValue)
             return false;
 
-        if (!await _identityService.CheckSecurityStampAsync(userId.Value, refreshTokenEntity.SecurityStamp, cancellationToken))
+        if (!await _identityService.CheckSecurityStampAsync(userId, refreshTokenEntity.SecurityStamp, cancellationToken))
             return false;
 
         return true;

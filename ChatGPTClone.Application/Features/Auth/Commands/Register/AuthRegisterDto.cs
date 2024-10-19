@@ -1,11 +1,14 @@
-﻿using ChatGPTClone.Application.Common.Models.Identity;
+using System;
+using ChatGPTClone.Application.Common.Models.Identity;
 
 namespace ChatGPTClone.Application.Features.Auth.Commands.Register;
 
 public class AuthRegisterDto
 {
     public Guid UserId { get; set; }
+
     public string EmailToken { get; set; }
+
 
     public AuthRegisterDto(Guid userId, string emailToken)
     {

@@ -1,6 +1,7 @@
-﻿namespace ChatGPTClone.Application.Common.Models.Identity;
-
-public class IdentityAuthenticateResponse
+﻿namespace ChatGPTClone.Application.Common.Models.Identity
 {
-    public string Token { get; set; }
+    public class IdentityAuthenticateResponse
+    {
+        public string Token { get; set; }
+    }
 }
